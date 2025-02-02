@@ -1,2 +1,13 @@
 fileFormatVersion: 2
 guid: bf27fff940103194db2255c5300ac393
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - hand: {instanceID: 0}
+  - pickupJoint: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

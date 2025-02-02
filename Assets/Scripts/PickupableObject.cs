@@ -5,13 +5,13 @@ using static Interact;
 public class PickupableObject : MonoBehaviour//, IInteractable
 {
     public GameObject hand;
-    public GameObject interactor;
     public Joint pickupJoint;
     public bool isPickedUp = false;
     public float dropForceThreshold = 500f;
-    public double dropCooldown = .5;
 
-    private double currentDropTimer = 0;
+
+    private double forcedDropCooldown = .5; //should be small number to prevent abnormally high joint force when picking an item up from triggering drop
+    private double currentForcedDropTimer = 0;
     private Interact.InteractResponse interactResponse;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -27,13 +27,13 @@ public class PickupableObject : MonoBehaviour//, IInteractable
         if (isPickedUp)
         {
             //check if force exceeds breaking threshold
-            if (pickupJoint.currentForce.magnitude > dropForceThreshold && currentDropTimer <= 0) dropObject();
+            if (pickupJoint.currentForce.magnitude > dropForceThreshold && currentForcedDropTimer <= 0) dropObject();
             //TODO add logic for drop vs throw on interactkey vs throwKey(probably mouse1)
 
             //TODO check joint stress and drop the Object if the stress force is past the threshold
         }
 
-        if (currentDropTimer > 0) currentDropTimer = currentDropTimer - Time.deltaTime;
+        if (currentForcedDropTimer > 0) currentForcedDropTimer = currentForcedDropTimer - Time.deltaTime;
     }
 
     void OnJointBreak(float breakForce)
@@ -47,7 +47,7 @@ public class PickupableObject : MonoBehaviour//, IInteractable
         //disconnect joint and inform interactor that interaction is done (object is dropped)
         pickupJoint.connectedBody = null;
         isPickedUp = false;
-        currentDropTimer = 0;
+        currentForcedDropTimer = 0;
         interactResponse(new InteractResponseEventArgs(gameObject, true));
     }
 
@@ -76,7 +76,7 @@ public class PickupableObject : MonoBehaviour//, IInteractable
             transform.rotation = hand.transform.rotation;
             pickupJoint.connectedBody = hand.GetComponent<Rigidbody>();
             isPickedUp= true;
-            currentDropTimer = dropCooldown;
+            currentForcedDropTimer = forcedDropCooldown;
 
             //set response variable for later response and respond to interactor
             interactResponse = args.interactResponseCallback;
