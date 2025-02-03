@@ -9,6 +9,7 @@ public class PickupableObject : MonoBehaviour//, IInteractable
     public static float dropForceThreshold = 100f;
     public static float throwForce = 7;
 
+    private int startingLayer;
     private Joint pickupJoint;
     private double forcedDropCooldown = .5; //should be small number to prevent abnormally high joint force when picking an item up from triggering drop
     private double currentForcedDropTimer = 0;
@@ -19,6 +20,7 @@ public class PickupableObject : MonoBehaviour//, IInteractable
     {
         //subscribe to interact events
         //Interact.InteractEvent.AddListener(onInteract);
+        startingLayer = gameObject.layer;
         Interact.interactEvent += onInteract;
         Debug.Log("object " + gameObject.GetInstanceID() + "is pickupable.");
     }
@@ -52,6 +54,7 @@ public class PickupableObject : MonoBehaviour//, IInteractable
 
         pickupJoint = gameObject.AddComponent<FixedJoint>();
         pickupJoint.connectedBody = hand.GetComponent<Rigidbody>();
+        gameObject.layer = 7;
     }
 
     void dropObject()
@@ -61,6 +64,7 @@ public class PickupableObject : MonoBehaviour//, IInteractable
         pickupJoint = null;
         isPickedUp = false;
         currentForcedDropTimer = 0;
+        gameObject.layer = startingLayer;
         GetComponent<Rigidbody>().linearVelocity = Vector3.zero; // here to stop object from going flying if it got forcefully dropped from pushing into wall
         interactResponse(new InteractResponseEventArgs(gameObject, true));
     }
@@ -74,6 +78,7 @@ public class PickupableObject : MonoBehaviour//, IInteractable
         pickupJoint = null;
         isPickedUp = false;
         currentForcedDropTimer = 0;
+        gameObject.layer = startingLayer;
         //apply impulse in direction of throw
         GetComponent<Rigidbody>().AddForce(throwDir, ForceMode.VelocityChange);
         //let interactor know object is dropped
