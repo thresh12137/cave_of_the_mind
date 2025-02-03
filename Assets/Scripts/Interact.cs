@@ -74,7 +74,7 @@ public class Interact : MonoBehaviour
             }
         }
 
-        if(hitBool && hit.collider.gameObject.GetComponent<IInteractable>() != null || !hitBool)
+        if(hitBool && hit.collider.gameObject.GetComponent<IInteractable>() == null || !hitBool)
             if(isInteractPossible)
                 fireInteractPossibleEvent(false);
     }
