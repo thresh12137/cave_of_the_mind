@@ -60,6 +60,7 @@ public class Interact : MonoBehaviour
                 {
                     //fire interact event
                     interactEvent(new InteractEventArgs(gameObject, hit.collider.gameObject, respondToEvent));
+                    Debug.Log("Interact Event sent to object: " + hit.collider.gameObject);
                     canInteract = false;
                     interactResponseNotRecievedTimer = 5;
                 }
@@ -71,6 +72,7 @@ public class Interact : MonoBehaviour
 
     void respondToEvent(InteractResponseEventArgs args)
     {
+        Debug.Log("Interact response recieved from:" + args.obj + ". doneWithInteraction? " + args.doneWithInteraction);
         canInteract = args.doneWithInteraction;
 
         //currentInteractionObject is set to the current object IF the interaction isn't done

@@ -6,7 +6,7 @@ public class PickupableObject : MonoBehaviour//, IInteractable
 {
     public GameObject hand;
     public bool isPickedUp = false;
-    public static float dropForceThreshold = 100f;
+    public static float dropForceThreshold = 6000f;
     public static float throwForce = 7;
 
     private Joint pickupJoint;
@@ -20,11 +20,12 @@ public class PickupableObject : MonoBehaviour//, IInteractable
         //subscribe to interact events
         //Interact.InteractEvent.AddListener(onInteract);
         Interact.interactEvent += onInteract;
-        
+        Debug.Log("object " + gameObject.GetInstanceID() + "is pickupable.");
     }
 
     void Update()
     {
+        //Debug.Log("current joint force: " + pickupJoint.currentForce.magnitude);
         if (isPickedUp && pickupJoint != null)
         {
             //check joint stress and drop the Object if the stress force is past the threshold
@@ -81,18 +82,20 @@ public class PickupableObject : MonoBehaviour//, IInteractable
 
     public void onInteract(InteractEventArgs args)
     {
-        if (isPickedUp)
+        if(args.target == gameObject)
         {
-            dropObject();
-        }
-        else
-        {
-            pickupObject();
+            if (isPickedUp)
+            {
+                dropObject();
+            }
+            else
+            {
+                pickupObject();
 
-            //set response variable for later response and respond to interactor
-            interactResponse = args.interactResponseCallback;
-            interactResponse(new InteractResponseEventArgs(gameObject, false));
+                //set response variable for later response and respond to interactor
+                interactResponse = args.interactResponseCallback;
+                interactResponse(new InteractResponseEventArgs(gameObject, false));
+            }
         }
-        
     }
 }
