@@ -34,7 +34,6 @@ public class ShiftableObject : MonoBehaviour
 
     void changeObjectTo(ObjectType type)
     {
-        //TODO change mesh and collider
         switch (type)
         {
             case ObjectType.Cube:

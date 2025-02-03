@@ -11,11 +11,14 @@ public class Interact : MonoBehaviour
     public float maxInteractDistance;
     public delegate void OnInteract(InteractEventArgs args);
     public static event OnInteract interactEvent;
+    public delegate void OnInteractPossibleEvent(bool isInteractPossible);
+    public static event OnInteractPossibleEvent interactPossibleEvent;
     public delegate void InteractResponse(InteractResponseEventArgs args);
     static bool canInteract = true;
     static GameObject currentInteractionObject = null;
     private double interactResponseNotRecievedTimer = 0d;
     private bool isInteractResponseRecieved = true;
+    private bool isInteractPossible = false;
 
     private void Start()
     {
@@ -52,9 +55,10 @@ public class Interact : MonoBehaviour
     private void TryInteract()
     {
         RaycastHit hit;
-        if (Physics.Raycast(pos.position, pos.forward, out hit, maxInteractDistance))
+        bool hitBool = Physics.Raycast(pos.position, pos.forward, out hit, maxInteractDistance);
+        if (hitBool)
         {
-            if (hit.collider.gameObject.tag == "Interactable")
+            if (hit.collider.gameObject.GetComponent<IInteractable>() != null)
             {
                 if (Input.GetKeyDown(interactKey))
                 {
@@ -65,9 +69,20 @@ public class Interact : MonoBehaviour
                     interactResponseNotRecievedTimer = 5;
                 }
 
-                //TODO  tell player controller/hud stuff to indicate that object can be interacted with (perhaps make another event type to say an object is in range)
+                //tell player controller/hud stuff to indicate that object can be interacted with
+                if (!isInteractPossible) fireInteractPossibleEvent(true);
             }
         }
+
+        if(hitBool && hit.collider.gameObject.GetComponent<IInteractable>() != null || !hitBool)
+            if(isInteractPossible)
+                fireInteractPossibleEvent(false);
+    }
+
+    private void fireInteractPossibleEvent(bool interactionPossibleVal)
+    {
+        isInteractPossible = interactionPossibleVal;
+        interactPossibleEvent(interactionPossibleVal);
     }
 
     void respondToEvent(InteractResponseEventArgs args)

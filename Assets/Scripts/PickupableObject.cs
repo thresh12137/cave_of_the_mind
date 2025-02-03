@@ -2,7 +2,7 @@ using UnityEditor.UI;
 using UnityEngine;
 using static Interact;
 
-public class PickupableObject : MonoBehaviour//, IInteractable
+public class PickupableObject : MonoBehaviour, IInteractable
 {
     public GameObject hand;
     public bool isPickedUp = false;
