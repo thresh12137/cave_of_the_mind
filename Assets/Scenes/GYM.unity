@@ -1393,7 +1393,6 @@ GameObject:
   - component: {fileID: 1204641586}
   - component: {fileID: 1204641585}
   - component: {fileID: 1204641589}
-  - component: {fileID: 1204641591}
   - component: {fileID: 1204641590}
   m_Layer: 0
   m_Name: Pickupable Cube
@@ -1531,25 +1530,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hand: {fileID: 1869172332}
-  pickupJoint: {fileID: 1204641591}
   isPickedUp: 0
-  dropForceThreshold: 500
---- !u!138 &1204641591
-FixedJoint:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1204641584}
-  serializedVersion: 1
-  m_ConnectedBody: {fileID: 0}
-  m_ConnectedArticulationBody: {fileID: 0}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_EnableCollision: 0
-  m_EnablePreprocessing: 1
-  m_MassScale: 1
-  m_ConnectedMassScale: 1
 --- !u!1 &1292402216
 GameObject:
   m_ObjectHideFlags: 0

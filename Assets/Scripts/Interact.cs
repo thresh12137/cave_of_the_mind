@@ -6,7 +6,7 @@ using static Interact;
 public class Interact : MonoBehaviour
 {
     public static KeyCode interactKey; //global key variable to reference from other scripts
-    public KeyCode interactionKey; //key to get from inspector  THIS IS BAD CODE STYLE!
+    public KeyCode interactionKey; //key to get from inspector  THIS IS BAD CODE STYLE!  FIX THIS!
     public Transform pos;
     public float maxInteractDistance;
     public delegate void OnInteract(InteractEventArgs args);
@@ -14,6 +14,8 @@ public class Interact : MonoBehaviour
     public delegate void InteractResponse(InteractResponseEventArgs args);
     static bool canInteract = true;
     static GameObject currentInteractionObject = null;
+    private double interactResponseNotRecievedTimer = 0d;
+    private bool isInteractResponseRecieved = true;
 
     private void Start()
     {
@@ -37,6 +39,14 @@ public class Interact : MonoBehaviour
                 interactEvent(new InteractEventArgs(gameObject, currentInteractionObject, respondToEvent));
             }
         }
+
+        //failsafe for if no response is recieved from interacted object after 5 seconds.  THIS SHOULD NEVER BE RELEVANT
+        if(interactResponseNotRecievedTimer > 0) interactResponseNotRecievedTimer -= Time.deltaTime;
+        if (interactResponseNotRecievedTimer <= 0 && !isInteractResponseRecieved)
+        {
+            canInteract = true;
+            currentInteractionObject = null;
+        } 
     }
 
     private void TryInteract()
@@ -51,6 +61,7 @@ public class Interact : MonoBehaviour
                     //fire interact event
                     interactEvent(new InteractEventArgs(gameObject, hit.collider.gameObject, respondToEvent));
                     canInteract = false;
+                    interactResponseNotRecievedTimer = 5;
                 }
 
                 //TODO  tell player controller/hud stuff to indicate that object can be interacted with (perhaps make another event type to say an object is in range)
@@ -65,6 +76,8 @@ public class Interact : MonoBehaviour
         //currentInteractionObject is set to the current object IF the interaction isn't done
         if (!args.doneWithInteraction) currentInteractionObject = args.obj;
         else currentInteractionObject = null;
+        isInteractResponseRecieved = true;
+        interactResponseNotRecievedTimer = 0;
     }
 }
 
