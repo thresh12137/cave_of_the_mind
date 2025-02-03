@@ -6,7 +6,7 @@ public class PickupableObject : MonoBehaviour//, IInteractable
 {
     public GameObject hand;
     public bool isPickedUp = false;
-    public static float dropForceThreshold = 6000f;
+    public static float dropForceThreshold = 100f;
     public static float throwForce = 7;
 
     private Joint pickupJoint;
