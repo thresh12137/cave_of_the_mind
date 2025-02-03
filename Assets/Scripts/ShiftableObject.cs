@@ -10,6 +10,7 @@ public class ShiftableObject : MonoBehaviour
 
     public Mesh cubeMesh;
     public Mesh sphereMesh;
+    public Mesh tetrahedronMesh;
 
     PickupableObject pickupableObjectComponent;
 
@@ -23,7 +24,7 @@ public class ShiftableObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (pickupableObjectComponent.isPickedUp)
+        if (pickupableObjectComponent != null && pickupableObjectComponent.isPickedUp)
         {
             if (Input.GetKeyDown(obj1Key)) changeObjectTo(ObjectType.Cube);
             if (Input.GetKeyDown(obj2Key)) changeObjectTo(ObjectType.Sphere);
@@ -47,7 +48,12 @@ public class ShiftableObject : MonoBehaviour
                 gameObject.AddComponent<SphereCollider>();
                 break;
             case ObjectType.Tetrahedron:
-                //TODO change to tetrahedron
+                GetComponent<MeshFilter>().mesh = tetrahedronMesh;
+                Destroy(GetComponent<Collider>());
+                MeshCollider col = gameObject.AddComponent<MeshCollider>();
+                col.sharedMesh = tetrahedronMesh;
+                col.convex = true;
+                col.enabled = true;
                 break;
         }
     }
