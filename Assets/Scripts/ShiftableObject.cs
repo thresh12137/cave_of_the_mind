@@ -1,3 +1,4 @@
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 public class ShiftableObject : MonoBehaviour
@@ -8,9 +9,7 @@ public class ShiftableObject : MonoBehaviour
     public static KeyCode obj4Key = KeyCode.Alpha4;
 
     public Mesh cubeMesh;
-    public Collider cubeCollider;
     public Mesh sphereMesh;
-    public Collider sphereCollider;
 
     PickupableObject pickupableObjectComponent;
 
@@ -35,6 +34,22 @@ public class ShiftableObject : MonoBehaviour
     void changeObjectTo(ObjectType type)
     {
         //TODO change mesh and collider
+        switch (type)
+        {
+            case ObjectType.Cube:
+                GetComponent<MeshFilter>().mesh = cubeMesh;
+                Destroy(GetComponent<Collider>());
+                gameObject.AddComponent<BoxCollider>();
+                break;
+            case ObjectType.Sphere:
+                GetComponent<MeshFilter>().mesh = sphereMesh;
+                Destroy(GetComponent<Collider>());
+                gameObject.AddComponent<SphereCollider>();
+                break;
+            case ObjectType.Tetrahedron:
+                //TODO change to tetrahedron
+                break;
+        }
     }
 }
 
