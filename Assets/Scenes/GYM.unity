@@ -525,10 +525,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0616550c7b36d0e408ee2b1738b3324f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactionDistance: 10
+  interactionDistance: 7
   doorOpenAnimName: Door_Open
   doorCloseAnimName: Door_Close
-  doorAnim: {fileID: 0}
+  doorAnim: {fileID: 1307446707}
 --- !u!1001 &125519434
 PrefabInstance:
   m_ObjectHideFlags: 0

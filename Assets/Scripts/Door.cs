@@ -26,12 +26,8 @@ public class Door : MonoBehaviour, IInteractable
          //Gets the parent object of the door and door hinge
         GameObject doorParent = gameObject;
 
-       
-
         if (doorAnim.GetCurrentAnimatorStateInfo(0).IsName(doorOpenAnimName))
         {
-
-            print("fired");
 
             doorAnim.ResetTrigger("Open");
             doorAnim.SetTrigger("Close");
