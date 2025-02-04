@@ -14,7 +14,7 @@ public class Door : MonoBehaviour, IInteractable
 
     public string doorOpenAnimName, doorCloseAnimName;
 
-   
+    public Animator doorAnim;
 
     void Start()
     {
@@ -26,7 +26,7 @@ public class Door : MonoBehaviour, IInteractable
          //Gets the parent object of the door and door hinge
         GameObject doorParent = gameObject;
 
-        Animator doorAnim = doorParent.GetComponent<Animator>();
+       
 
         if (doorAnim.GetCurrentAnimatorStateInfo(0).IsName(doorOpenAnimName))
         {
