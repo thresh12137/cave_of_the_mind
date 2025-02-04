@@ -51,29 +51,9 @@ public class Door : MonoBehaviour, IInteractable
     public void onInteract(InteractEventArgs args)
     {
         if (args.target == gameObject) {
-            print("Called");
             openDoor();
             args.interactResponseCallback(new InteractResponseEventArgs(gameObject, true));
         }
     }
 
-    void Update()
-    {
-        Ray ray = new Ray(transform.position, transform.forward);
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit, interactionDistance)) {
-
-            if (hit.collider.gameObject.tag == "Door")
-            {
-
-                
-                //If we want to have interaction text displayed
-                //interactionText.SetActive(true);
-
-            }
-        }
-    }
-
-  
 }
