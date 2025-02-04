@@ -27,24 +27,22 @@ public class Door : MonoBehaviour, IInteractable
         GameObject doorParent = gameObject;
 
         Animator doorAnim = doorParent.GetComponent<Animator>();
-        
-        if (Input.GetKeyDown(KeyCode.J)) {
-            print("pressed");
 
-            if (doorAnim.GetCurrentAnimatorStateInfo(0).IsName(doorOpenAnimName)) {
+        if (doorAnim.GetCurrentAnimatorStateInfo(0).IsName(doorOpenAnimName))
+        {
 
-                print("fired");
+            print("fired");
 
-                doorAnim.ResetTrigger("Open");
-                doorAnim.SetTrigger("Close");
+            doorAnim.ResetTrigger("Open");
+            doorAnim.SetTrigger("Close");
 
-            }
-            if (doorAnim.GetCurrentAnimatorStateInfo(0).IsName(doorCloseAnimName)) {
+        }
+        if (doorAnim.GetCurrentAnimatorStateInfo(0).IsName(doorCloseAnimName))
+        {
 
-                doorAnim.ResetTrigger("Close");
-                doorAnim.SetTrigger("Open");
+            doorAnim.ResetTrigger("Close");
+            doorAnim.SetTrigger("Open");
 
-                    }
         }
     }
 
