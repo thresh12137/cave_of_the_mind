@@ -19,10 +19,8 @@ public class PickupableObject : MonoBehaviour, IInteractable
     void Start()
     {
         //subscribe to interact events
-        //Interact.InteractEvent.AddListener(onInteract);
-        startingLayer = gameObject.layer;
         Interact.interactEvent += onInteract;
-        Debug.Log("object " + gameObject.GetInstanceID() + "is pickupable.");
+        startingLayer = gameObject.layer;
     }
 
     void Update()
@@ -36,7 +34,6 @@ public class PickupableObject : MonoBehaviour, IInteractable
             //throw on throwKey (probably mouse1)
             if (Input.GetMouseButtonDown(0))
             {
-                Debug.Log("Mouse Input detected");
                 throwObject();
             }
         }

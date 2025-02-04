@@ -14,11 +14,12 @@ public class Interact : MonoBehaviour
     public delegate void OnInteractPossibleEvent(bool isInteractPossible);
     public static event OnInteractPossibleEvent interactPossibleEvent;
     public delegate void InteractResponse(InteractResponseEventArgs args);
-    static bool canInteract = true;
+    public bool canInteract = true;
     static GameObject currentInteractionObject = null;
     private double interactResponseNotRecievedTimer = 0d;
     private bool isInteractResponseRecieved = true;
     private bool isInteractPossible = false;
+    private int interactID = 0;
 
     private void Start()
     {
@@ -54,6 +55,7 @@ public class Interact : MonoBehaviour
 
     private void TryInteract()
     {
+        Debug.Log("trying interact");
         RaycastHit hit;
         bool hitBool = Physics.Raycast(pos.position, pos.forward, out hit, maxInteractDistance);
         if (hitBool)
@@ -63,10 +65,10 @@ public class Interact : MonoBehaviour
                 if (Input.GetKeyDown(interactKey))
                 {
                     //fire interact event
-                    interactEvent(new InteractEventArgs(gameObject, hit.collider.gameObject, respondToEvent));
-                    Debug.Log("Interact Event sent to object: " + hit.collider.gameObject);
+                    Debug.Log("Interact Event sent to object: " + hit.collider.gameObject + ".  Id: " + interactID++);
                     canInteract = false;
                     interactResponseNotRecievedTimer = 5;
+                    interactEvent(new InteractEventArgs(gameObject, hit.collider.gameObject, respondToEvent));
                 }
 
                 //tell player controller/hud stuff to indicate that object can be interacted with
