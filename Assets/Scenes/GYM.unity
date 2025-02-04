@@ -525,7 +525,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0616550c7b36d0e408ee2b1738b3324f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactionDistance: 7
+  interactionDistance: 10
   doorOpenAnimName: Door_Open
   doorCloseAnimName: Door_Close
 --- !u!1001 &125519434

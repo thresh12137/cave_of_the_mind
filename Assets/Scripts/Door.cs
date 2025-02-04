@@ -1,8 +1,10 @@
 using NUnit.Framework.Interfaces;
+using System.Runtime.InteropServices;
+using System.Transactions;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class Door : MonoBehaviour
+public class Door : MonoBehaviour, IInteractable
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
@@ -11,6 +13,49 @@ public class Door : MonoBehaviour
     //public GameObject interactionText;
 
     public string doorOpenAnimName, doorCloseAnimName;
+
+   
+
+    void Start()
+    {
+        Interact.interactEvent += onInteract;
+    }
+
+    void openDoor() {
+
+         //Gets the parent object of the door and door hinge
+        GameObject doorParent = gameObject;
+
+        Animator doorAnim = doorParent.GetComponent<Animator>();
+        
+        if (Input.GetKeyDown(KeyCode.J)) {
+            print("pressed");
+
+            if (doorAnim.GetCurrentAnimatorStateInfo(0).IsName(doorOpenAnimName)) {
+
+                print("fired");
+
+                doorAnim.ResetTrigger("Open");
+                doorAnim.SetTrigger("Close");
+
+            }
+            if (doorAnim.GetCurrentAnimatorStateInfo(0).IsName(doorCloseAnimName)) {
+
+                doorAnim.ResetTrigger("Close");
+                doorAnim.SetTrigger("Open");
+
+                    }
+        }
+    }
+
+    public void onInteract(InteractEventArgs args)
+    {
+        if (args.target == gameObject) {
+            print("Called");
+            openDoor();
+            args.interactResponseCallback(new InteractResponseEventArgs(gameObject, true));
+        }
+    }
 
     void Update()
     {
@@ -22,39 +67,13 @@ public class Door : MonoBehaviour
             if (hit.collider.gameObject.tag == "Door")
             {
 
-                //Gets the parent object of the door and door hinge
-                GameObject doorParent = hit.collider.transform.root.gameObject;
-
-                Animator doorAnim = doorParent.GetComponent<Animator>();
+                
                 //If we want to have interaction text displayed
                 //interactionText.SetActive(true);
-
-                if (Input.GetKeyDown(KeyCode.J))
-                {
-
-                    if (doorAnim.GetCurrentAnimatorStateInfo(0).IsName(doorOpenAnimName))
-                    {
-
-                        doorAnim.ResetTrigger("Open");
-                        doorAnim.SetTrigger("Close");
-
-                    }
-
-                    if (doorAnim.GetCurrentAnimatorStateInfo(0).IsName(doorOpenAnimName))
-                    {
-
-                        doorAnim.ResetTrigger("Close");
-                        doorAnim.SetTrigger("Open");
-
-                    }
-                }
-            }
-            else { 
-                
-                //interactionText.SetActive(false);
 
             }
         }
     }
 
+  
 }
