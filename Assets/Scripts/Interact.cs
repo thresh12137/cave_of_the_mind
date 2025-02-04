@@ -16,6 +16,7 @@ public class Interact : MonoBehaviour
     public delegate void InteractResponse(InteractResponseEventArgs args);
     public bool canInteract = true;
     static GameObject currentInteractionObject = null;
+    private IInteractable currentInteractionScript = null;
     private double interactResponseNotRecievedTimer = 0d;
     private bool isInteractResponseRecieved = true;
     private bool isInteractPossible = false;
@@ -37,10 +38,10 @@ public class Interact : MonoBehaviour
         }
         else
         {
-            if (Input.GetKeyDown(interactKey) && currentInteractionObject != null)
+            if (Input.GetKeyDown(interactKey) && currentInteractionScript != null)
             {
                 //fire interact event with current object
-                interactEvent(new InteractEventArgs(gameObject, currentInteractionObject, respondToEvent));
+                currentInteractionScript.onInteract(new InteractEventArgs(gameObject, currentInteractionObject, respondToEvent));
             }
         }
 
@@ -50,17 +51,18 @@ public class Interact : MonoBehaviour
         {
             canInteract = true;
             currentInteractionObject = null;
+            fireInteractPossibleEvent(false);
         } 
     }
 
     private void TryInteract()
     {
-        Debug.Log("trying interact");
         RaycastHit hit;
         bool hitBool = Physics.Raycast(pos.position, pos.forward, out hit, maxInteractDistance);
         if (hitBool)
         {
-            if (hit.collider.gameObject.GetComponent<IInteractable>() != null)
+            IInteractable interactable = hit.collider.gameObject.GetComponent<IInteractable>();
+            if (interactable != null)
             {
                 if (Input.GetKeyDown(interactKey))
                 {
@@ -69,7 +71,7 @@ public class Interact : MonoBehaviour
                     canInteract = false;
                     interactResponseNotRecievedTimer = 5;
                     isInteractResponseRecieved = false;
-                    interactEvent(new InteractEventArgs(gameObject, hit.collider.gameObject, respondToEvent));
+                    interactable.onInteract(new InteractEventArgs(gameObject, hit.collider.gameObject, respondToEvent));
                 }
 
                 //tell player controller/hud stuff to indicate that object can be interacted with
@@ -94,8 +96,16 @@ public class Interact : MonoBehaviour
         canInteract = args.doneWithInteraction;
 
         //currentInteractionObject is set to the current object IF the interaction isn't done
-        if (!args.doneWithInteraction) currentInteractionObject = args.obj;
-        else currentInteractionObject = null;
+        if (!args.doneWithInteraction)
+        {
+            currentInteractionObject = args.obj;
+            currentInteractionScript = args.obj.GetComponent<IInteractable>();
+        }
+        else
+        {
+            currentInteractionObject = null;
+            currentInteractionScript = null;
+        }
         isInteractResponseRecieved = true;
         interactResponseNotRecievedTimer = 0;
     }
