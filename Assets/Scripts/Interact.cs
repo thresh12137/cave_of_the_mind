@@ -68,6 +68,7 @@ public class Interact : MonoBehaviour
                     Debug.Log("Interact Event sent to object: " + hit.collider.gameObject + ".  Id: " + interactID++);
                     canInteract = false;
                     interactResponseNotRecievedTimer = 5;
+                    isInteractResponseRecieved = false;
                     interactEvent(new InteractEventArgs(gameObject, hit.collider.gameObject, respondToEvent));
                 }
 
