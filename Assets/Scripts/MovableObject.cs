@@ -119,6 +119,7 @@ public class MovableObject : MonoBehaviour, IInteractable
     void playerDetected()
     {
         isPlayerStandingOnPlatform = true;
+        if (isPickedUp) dropObject();
     }
 
     void playerNotDetected()
@@ -176,6 +177,7 @@ public class MovableObject : MonoBehaviour, IInteractable
 
     public bool interactionQuery(float distance)
     {
-        return distance < maxInteractableDistance;
+        if (isPlayerStandingOnPlatform) return false;
+        else return distance < maxInteractableDistance;
     }
 }
