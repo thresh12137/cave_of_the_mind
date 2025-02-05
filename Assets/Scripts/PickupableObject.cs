@@ -14,12 +14,11 @@ public class PickupableObject : MonoBehaviour, IInteractable
     private double forcedDropCooldown = .5; //should be small number to prevent abnormally high joint force when picking an item up from triggering drop
     private double currentForcedDropTimer = 0;
     private Interact.InteractResponse interactResponse;
+    private float maxInteractionDistance = 3;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        //subscribe to interact events
-        Interact.interactEvent += onInteract;
         startingLayer = gameObject.layer;
     }
 
@@ -84,20 +83,22 @@ public class PickupableObject : MonoBehaviour, IInteractable
 
     public void onInteract(InteractEventArgs args)
     {
-        if(args.target == gameObject)
+        if (isPickedUp)
         {
-            if (isPickedUp)
-            {
-                dropObject();
-            }
-            else
-            {
-                pickupObject();
-
-                //set response variable for later response and respond to interactor
-                interactResponse = args.interactResponseCallback;
-                interactResponse(new InteractResponseEventArgs(gameObject, false));
-            }
+            dropObject();
         }
+        else
+        {
+            pickupObject();
+
+            //set response variable for later response and respond to interactor
+            interactResponse = args.interactResponseCallback;
+            interactResponse(new InteractResponseEventArgs(gameObject, false));
+        }
+    }
+
+    public bool interactionQuery(float distance)
+    {
+        return distance < maxInteractionDistance;
     }
 }

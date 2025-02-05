@@ -18,7 +18,7 @@ public class ShiftableObject : MonoBehaviour
     void Start()
     {
         pickupableObjectComponent = GetComponent<PickupableObject>();
-        if(pickupableObjectComponent == null) Debug.Log("Object is not a pickupableObject:" + gameObject);
+        if(pickupableObjectComponent == null) throw new System.Exception("Object is not a pickupableObject:" + gameObject);
     }
 
     // Update is called once per frame

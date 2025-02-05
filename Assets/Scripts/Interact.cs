@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -9,8 +10,6 @@ public class Interact : MonoBehaviour
     public KeyCode interactionKey; //key to get from inspector  THIS IS BAD CODE STYLE!  FIX THIS!
     public Transform pos;
     public float maxInteractDistance;
-    public delegate void OnInteract(InteractEventArgs args);
-    public static event OnInteract interactEvent;
     public delegate void OnInteractPossibleEvent(bool isInteractPossible);
     public static event OnInteractPossibleEvent interactPossibleEvent;
     public delegate void InteractResponse(InteractResponseEventArgs args);
@@ -20,12 +19,10 @@ public class Interact : MonoBehaviour
     private double interactResponseNotRecievedTimer = 0d;
     private bool isInteractResponseRecieved = true;
     private bool isInteractPossible = false;
-    private int interactID = 0;
 
     private void Start()
     {
         interactKey = interactionKey;
-        //interactResponseEvent += respondToEvent;
     }
 
     // Update is called once per frame
@@ -58,30 +55,39 @@ public class Interact : MonoBehaviour
     private void TryInteract()
     {
         RaycastHit hit;
+        bool interactionQuery = false;
         bool hitBool = Physics.Raycast(pos.position, pos.forward, out hit, maxInteractDistance);
         if (hitBool)
         {
             IInteractable interactable = hit.collider.gameObject.GetComponent<IInteractable>();
             if (interactable != null)
             {
-                if (Input.GetKeyDown(interactKey))
+                interactionQuery = interactable.interactionQuery(hit.distance);
+                if (interactionQuery)
                 {
-                    //fire interact event
-                    Debug.Log("Interact Event sent to object: " + hit.collider.gameObject);
-                    canInteract = false;
-                    interactResponseNotRecievedTimer = 5;
-                    isInteractResponseRecieved = false;
-                    interactable.onInteract(new InteractEventArgs(gameObject, hit.collider.gameObject, respondToEvent));
+                    if (Input.GetKeyDown(interactKey))
+                    {
+                        //fire interact event
+                        Debug.Log("Interact Event sent to object: " + hit.collider.gameObject);
+                        canInteract = false;
+                        interactResponseNotRecievedTimer = 5;
+                        isInteractResponseRecieved = false;
+                        interactable.onInteract(new InteractEventArgs(gameObject, hit.collider.gameObject, respondToEvent));
+                    }
                 }
-
-                //tell player controller/hud stuff to indicate that object can be interacted with
-                if (!isInteractPossible) fireInteractPossibleEvent(true);
             }
         }
 
-        if(hitBool && hit.collider.gameObject.GetComponent<IInteractable>() == null || !hitBool)
-            if(isInteractPossible)
-                fireInteractPossibleEvent(false);
+        //inform hud of changed interaction possibility state
+        if (interactionQuery)
+        {
+            if (!isInteractPossible) fireInteractPossibleEvent(true);
+        }
+        else
+        {
+            if (isInteractPossible) fireInteractPossibleEvent(false);
+        }
+            
     }
 
     private void fireInteractPossibleEvent(bool interactionPossibleVal)
@@ -121,6 +127,7 @@ public class Interact : MonoBehaviour
 public interface IInteractable
 {
     void onInteract(InteractEventArgs args);
+    bool interactionQuery(float distance);
 }
 
 //args for interact event

@@ -1,3 +1,4 @@
+using System.Data;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.XR;
@@ -9,6 +10,7 @@ using static UnityEngine.Rendering.GPUSort;
 /// </summary>
 public class MovableObject : MonoBehaviour, IInteractable
 {
+    private float maxInteractableDistance = 10;
     public Vector3 point1;
     public Vector3 point2;
     public float startLerpPosition; //fraction along the path point1 -> point2 to start.  For example, 0 is at point 1, 1 is at point 2, and 0.5 is the midpoint between them
@@ -17,7 +19,6 @@ public class MovableObject : MonoBehaviour, IInteractable
     public PlayerDetectionTrigger playerDetectionTrigger;
     private bool isPlayerStandingOnPlatform = false;
     private bool currentlyInCollision = false;
-    private Vector3 centerOfPath;
 
     private Vector3 movementAxis; //this normalized vector points towards point2 from point1
     private float distance; //distance between point 1 and point 2
@@ -30,9 +31,10 @@ public class MovableObject : MonoBehaviour, IInteractable
 
     void Start()
     {
+        if (playerDetectionTrigger == null) throw new System.Exception("No playerDetectionTrigger associated with " + gameObject);
+
         isPickedUp = false;
         transform.position = Vector3.Lerp(point1, point2, startLerpPosition);
-        centerOfPath = Vector3.Lerp(point1, point2, 0.5f);
         lastPoint = transform.position;
 
         playerDetectionTrigger.enterEvent += playerDetected;
@@ -116,13 +118,11 @@ public class MovableObject : MonoBehaviour, IInteractable
     }
     void playerDetected()
     {
-        Debug.Log("Player Detected");
         isPlayerStandingOnPlatform = true;
     }
 
     void playerNotDetected()
     {
-        Debug.Log("Player No Longer Detected");
         isPlayerStandingOnPlatform = false;
     }
 
@@ -139,14 +139,11 @@ public class MovableObject : MonoBehaviour, IInteractable
     void pickupObject()
     {
         isPickedUp = true;
-        //GetComponent<Rigidbody>().isKinematic = false;
-        //gameObject.layer = 7; //have this if using grounded state to ensure the platform isn't moved when stood on
     }
 
     void dropObject()
     {
         isPickedUp = false;
-        //GetComponent<Rigidbody>().isKinematic = true;
         transform.position = lastPoint;
 
         interactResponse(new InteractResponseEventArgs(gameObject, true));
@@ -156,25 +153,29 @@ public class MovableObject : MonoBehaviour, IInteractable
 
     public void onInteract(InteractEventArgs args)
     {
-        if (!isPlayerStandingOnPlatform)
+        if (isPlayerStandingOnPlatform)
         {
-            if (isPickedUp)
-            {
-                dropObject();
-            }
-            else
-            {
-                pickupObject();
+            args.interactResponseCallback(new InteractResponseEventArgs(gameObject, true));
+            return;
+        }
 
-                //set response variable for later response and respond to interactor
-                interactor = args.sender;
-                interactResponse = args.interactResponseCallback;
-                interactResponse(new InteractResponseEventArgs(gameObject, false));
-            }
+        if (isPickedUp)
+        {
+            dropObject();
         }
         else
         {
-            args.interactResponseCallback(new InteractResponseEventArgs(gameObject, true));
+            pickupObject();
+
+            //set response variable for later response and respond to interactor
+            interactor = args.sender;
+            interactResponse = args.interactResponseCallback;
+            interactResponse(new InteractResponseEventArgs(gameObject, false));
         }
+    }
+
+    public bool interactionQuery(float distance)
+    {
+        return distance < maxInteractableDistance;
     }
 }

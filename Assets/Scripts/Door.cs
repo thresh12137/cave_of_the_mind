@@ -1,53 +1,79 @@
 using NUnit.Framework.Interfaces;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Transactions;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class Door : MonoBehaviour, IInteractable
+public class Door : MonoBehaviour, IInteractable, ITriggeredByButton
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-
-    public float interactionDistance;
-    //Uncomment if we want to display text to interact with the door
-    //public GameObject interactionText;
-
     public string doorOpenAnimName, doorCloseAnimName;
 
     public Animator doorAnim;
+    public List<Button> buttons;
+    public bool areButtonsRequired = false;
+    public int numButtonsRequired = 1;
+    private int numButtonsPressed = 0;
+    private bool isOpen;
+    private float maxInteractionDistance = 5;
 
     void Start()
     {
-        Interact.interactEvent += onInteract;
+        isOpen = doorAnim.GetCurrentAnimatorStateInfo(0).IsName(doorOpenAnimName);
+        foreach (Button b in buttons)
+        {
+            b.pressedEvent += onButtonPressed;
+            b.releasedEvent += onButtonReleased;
+        }
     }
 
-    void openDoor() {
+    void openDoor() 
+    {
+        if (isOpen) return;
 
-         //Gets the parent object of the door and door hinge
-        GameObject doorParent = gameObject;
+        doorAnim.ResetTrigger("Close");
+        doorAnim.SetTrigger("Open");
+        isOpen = true;
+    }
 
-        if (doorAnim.GetCurrentAnimatorStateInfo(0).IsName(doorOpenAnimName))
-        {
+    void closeDoor()
+    {
+        if (!isOpen) return;
 
-            doorAnim.ResetTrigger("Open");
-            doorAnim.SetTrigger("Close");
-
-        }
-        if (doorAnim.GetCurrentAnimatorStateInfo(0).IsName(doorCloseAnimName))
-        {
-
-            doorAnim.ResetTrigger("Close");
-            doorAnim.SetTrigger("Open");
-
-        }
+        doorAnim.ResetTrigger("Open");
+        doorAnim.SetTrigger("Close");
+        isOpen = false;
     }
 
     public void onInteract(InteractEventArgs args)
     {
-        if (args.target == gameObject) {
-            openDoor();
+        if (areButtonsRequired)
+        {
             args.interactResponseCallback(new InteractResponseEventArgs(gameObject, true));
+            return;
         }
+
+        if (isOpen) closeDoor();
+        else openDoor();
+
+        args.interactResponseCallback(new InteractResponseEventArgs(gameObject, true));
     }
 
+    public void onButtonPressed(GameObject button)
+    {
+        numButtonsPressed++;
+        if(numButtonsPressed >= numButtonsRequired) openDoor();
+    }
+
+    public void onButtonReleased(GameObject button)
+    {
+        numButtonsPressed--;
+        if (numButtonsPressed < numButtonsRequired) closeDoor();
+    }
+
+    public bool interactionQuery(float distance)
+    {
+        if (areButtonsRequired) return false;
+        else return distance < maxInteractionDistance;
+    }
 }
