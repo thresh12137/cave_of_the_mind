@@ -14,8 +14,9 @@ public class MovableObject : MonoBehaviour, IInteractable
     public float startLerpPosition; //fraction along the path point1 -> point2 to start.  For example, 0 is at point 1, 1 is at point 2, and 0.5 is the midpoint between them
     public bool isPickedUp = false;
     private GameObject interactor;
-    public GameObject stoodOnCheckObject;
+    public PlayerDetectionTrigger playerDetectionTrigger;
     private bool isPlayerStandingOnPlatform = false;
+    private bool currentlyInCollision = false;
 
     private Vector3 movementAxis; //this normalized vector points towards point2 from point1
     private float distance; //distance between point 1 and point 2
@@ -31,6 +32,11 @@ public class MovableObject : MonoBehaviour, IInteractable
         isPickedUp = false;
         transform.position = Vector3.Lerp(point1, point2, startLerpPosition);
         lastPoint = transform.position;
+
+        playerDetectionTrigger.enterEvent += playerDetected;
+        playerDetectionTrigger.exitEvent += playerNotDetected;
+
+        //GetComponent<Rigidbody>().isKinematic = true;
 
         Vector3 axisAlignedCheckValue = point1 - point2; 
         movementAxis = axisAlignedCheckValue.normalized;
@@ -59,7 +65,6 @@ public class MovableObject : MonoBehaviour, IInteractable
         if (isPickedUp)
         {
             //TODO check for player standing on it
-
             //set up variables
             Ray ray = new Ray(interactor.transform.position, interactor.transform.forward);
             float distanceAlongRay;
@@ -72,6 +77,7 @@ public class MovableObject : MonoBehaviour, IInteractable
                 newPos.x = Mathf.Clamp(newPos.x, minimumX, maximumX);
                 newPos.y = Mathf.Clamp(newPos.y, minimumY, maximumY);
                 newPos.z = Mathf.Clamp(newPos.z, minimumZ, maximumZ);
+
                 transform.position = newPos;
                 lastPoint = newPos;
             }
@@ -81,16 +87,40 @@ public class MovableObject : MonoBehaviour, IInteractable
             }
         }
     }
+    void playerDetected()
+    {
+        Debug.Log("Player Detected");
+        isPlayerStandingOnPlatform = true;
+    }
+
+    void playerNotDetected()
+    {
+        Debug.Log("Player No Longer Detected");
+        isPlayerStandingOnPlatform = false;
+    }
+
+    void OnCollisionEnter(Collision c)
+    {
+        if (!currentlyInCollision)
+        {
+            if (isPickedUp) dropObject();
+        }
+        else currentlyInCollision = false;
+    }
+
 
     void pickupObject()
     {
         isPickedUp = true;
+        //GetComponent<Rigidbody>().isKinematic = false;
         //gameObject.layer = 7; //have this if using grounded state to ensure the platform isn't moved when stood on
     }
 
     void dropObject()
     {
         isPickedUp = false;
+        //GetComponent<Rigidbody>().isKinematic = true;
+        transform.position = lastPoint;
 
         interactResponse(new InteractResponseEventArgs(gameObject, true));
         interactor = null;
@@ -99,7 +129,7 @@ public class MovableObject : MonoBehaviour, IInteractable
 
     public void onInteract(InteractEventArgs args)
     {
-        if (args.target == gameObject)
+        if (!isPlayerStandingOnPlatform)
         {
             if (isPickedUp)
             {
@@ -114,6 +144,10 @@ public class MovableObject : MonoBehaviour, IInteractable
                 interactResponse = args.interactResponseCallback;
                 interactResponse(new InteractResponseEventArgs(gameObject, false));
             }
+        }
+        else
+        {
+            args.interactResponseCallback(new InteractResponseEventArgs(gameObject, true));
         }
     }
 }

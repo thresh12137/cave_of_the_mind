@@ -67,7 +67,7 @@ public class Interact : MonoBehaviour
                 if (Input.GetKeyDown(interactKey))
                 {
                     //fire interact event
-                    Debug.Log("Interact Event sent to object: " + hit.collider.gameObject + ".  Id: " + interactID++);
+                    Debug.Log("Interact Event sent to object: " + hit.collider.gameObject);
                     canInteract = false;
                     interactResponseNotRecievedTimer = 5;
                     isInteractResponseRecieved = false;
