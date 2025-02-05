@@ -17,6 +17,7 @@ public class MovableObject : MonoBehaviour, IInteractable
     public PlayerDetectionTrigger playerDetectionTrigger;
     private bool isPlayerStandingOnPlatform = false;
     private bool currentlyInCollision = false;
+    private Vector3 centerOfPath;
 
     private Vector3 movementAxis; //this normalized vector points towards point2 from point1
     private float distance; //distance between point 1 and point 2
@@ -31,6 +32,7 @@ public class MovableObject : MonoBehaviour, IInteractable
     {
         isPickedUp = false;
         transform.position = Vector3.Lerp(point1, point2, startLerpPosition);
+        centerOfPath = Vector3.Lerp(point1, point2, 0.5f);
         lastPoint = transform.position;
 
         playerDetectionTrigger.enterEvent += playerDetected;
@@ -64,27 +66,52 @@ public class MovableObject : MonoBehaviour, IInteractable
     {
         if (isPickedUp)
         {
-            //TODO check for player standing on it
-            //set up variables
+            //set up variables and cast rays
             Ray ray = new Ray(interactor.transform.position, interactor.transform.forward);
-            float distanceAlongRay;
+            float horizontalDistanceAlongRay, verticalDistanceAlongRay;
+            Vector3 newPos;
+            Vector3 newPosHorizontal = Vector3.zero;
+            Vector3 newPosVertical = Vector3.zero;
+            bool horizontalPlaneBool = horizontalPlane.Raycast(ray, out horizontalDistanceAlongRay);
+            bool verticalPlaneBool = verticalPlane.Raycast(ray, out verticalDistanceAlongRay);
 
-            //raycast with the vertical plane to get the point above the path
-            if(verticalPlane.Raycast(ray, out distanceAlongRay))
+            //set new position
+            if(verticalPlaneBool && horizontalPlaneBool)
             {
-                //get closest point to the horizontal plane, which is the distance along the path that it should be.  This needs to be clamped severely
-                Vector3 newPos = horizontalPlane.ClosestPointOnPlane(ray.GetPoint(distanceAlongRay));
-                newPos.x = Mathf.Clamp(newPos.x, minimumX, maximumX);
-                newPos.y = Mathf.Clamp(newPos.y, minimumY, maximumY);
-                newPos.z = Mathf.Clamp(newPos.z, minimumZ, maximumZ);
-
-                transform.position = newPos;
-                lastPoint = newPos;
+                bool verticalPointCloserThanHorizontalPoint = Vector3.Distance(ray.GetPoint(verticalDistanceAlongRay), transform.position) < Vector3.Distance(ray.GetPoint(horizontalDistanceAlongRay), transform.position);
+                if (verticalPointCloserThanHorizontalPoint)
+                {
+                    //use vertical distance
+                    newPos = horizontalPlane.ClosestPointOnPlane(ray.GetPoint(verticalDistanceAlongRay));
+                }
+                else
+                {
+                    //use horizontal distance
+                    newPos = verticalPlane.ClosestPointOnPlane(ray.GetPoint(horizontalDistanceAlongRay));
+                }
+            }
+            else if(verticalPlaneBool && !horizontalPlaneBool)
+            {
+                newPos = horizontalPlane.ClosestPointOnPlane(ray.GetPoint(verticalDistanceAlongRay));
+            }
+            else if(horizontalPlaneBool && !verticalPlaneBool)
+            {
+                newPos = verticalPlane.ClosestPointOnPlane(ray.GetPoint(horizontalDistanceAlongRay));
             }
             else
             {
-                transform.position = lastPoint;
+                newPos = lastPoint;
             }
+
+            //clamp new position
+            newPos.x = Mathf.Clamp(newPos.x, minimumX, maximumX);
+            newPos.y = Mathf.Clamp(newPos.y, minimumY, maximumY);
+            newPos.z = Mathf.Clamp(newPos.z, minimumZ, maximumZ);
+
+            //apply new position
+            transform.position = newPos;
+            lastPoint = newPos;
+            //raycast with the vertical plane to get the point above the path
         }
     }
     void playerDetected()
