@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class Button : MonoBehaviour
 {
+
+    //To play animation for button pressed and not pressed
+    public string buttonPressedAnim, buttonUnpressedAnim;
+
+    public Animator buttonAnim;
+
     public ObjectDetectionTrigger objectDetectionTrigger;
 
     public delegate void ButtonPressed(GameObject button);
@@ -13,6 +19,8 @@ public class Button : MonoBehaviour
     public bool isPressed;
     private List<GameObject> pressers;
 
+    
+
     private void Start()
     {
         if (objectDetectionTrigger == null) throw new System.Exception("No objectDetectionTrigger associated with " + gameObject);
@@ -20,7 +28,7 @@ public class Button : MonoBehaviour
         objectDetectionTrigger.enterEvent += buttonPressedby;
         objectDetectionTrigger.exitEvent += buttonReleasedby;
 
-        isPressed = false;
+        isPressed = buttonAnim.GetCurrentAnimatorStateInfo(0).IsName(buttonPressedAnim);
         pressers = new List<GameObject>();
     }
 
@@ -57,10 +65,23 @@ public class Button : MonoBehaviour
 
     void animateButtonDown()
     {
-        //TODO make button go down
+        
+
+       // if(isPressed) return;
+
+        buttonAnim.ResetTrigger("Unpressed");
+        print("Playing Animation");
+        buttonAnim.SetTrigger("Pressed");
+        isPressed = true;
+
     }
     void animateButtonUp()
     {
+       // if(!isPressed) return;
+
+        buttonAnim.ResetTrigger("Pressed");
+        buttonAnim.SetTrigger("Unpressed");
+        isPressed = false;
         //TODO make button go up
     }
 }
