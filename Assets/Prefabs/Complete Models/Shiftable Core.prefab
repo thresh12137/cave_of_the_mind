@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 108761439129898609}
   - component: {fileID: 8290294771646709390}
   m_Layer: 0
-  m_Name: Shiftable Cube
+  m_Name: Shiftable Core
   m_TagString: Interactable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -68,7 +68,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 19efce32108c9034187df3ad1a9ccb66, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
