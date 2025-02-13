@@ -1,5 +1,6 @@
-using UnityEditor.UI;
+//using UnityEditor.UI;
 using UnityEngine;
+using UnityEngine.UI;
 using static Interact;
 
 public class PickupableObject : MonoBehaviour, IInteractable
