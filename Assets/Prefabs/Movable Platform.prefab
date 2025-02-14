@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7243914501796845650}
   - component: {fileID: 8109136414133856343}
   - component: {fileID: 2239331432072203242}
+  - component: {fileID: 6746386124955839933}
   m_Layer: 2
   m_Name: PlayerDetectionTrigger
   m_TagString: Untagged
@@ -64,6 +65,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ee5ff3af1d693149aae6be35867bb0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6746386124955839933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5968564343683185174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cf4463b368152745961e9ad4e5c13bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &7094744459693848945
@@ -194,6 +207,7 @@ MonoBehaviour:
   startLerpPosition: 0.5
   isPickedUp: 0
   playerDetectionTrigger: {fileID: 2239331432072203242}
+  objectDetectionTrigger: {fileID: 0}
 --- !u!54 &6452882929563564612
 Rigidbody:
   m_ObjectHideFlags: 0

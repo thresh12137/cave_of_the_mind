@@ -13,7 +13,7 @@ public class PickupableObject : MonoBehaviour, IInteractable
     private Rigidbody rigidbodyComponent;
     private int startingLayer;
     private Joint pickupJoint;
-    private double forcedDropCooldown = .5; //should be small number to prevent abnormally high joint force when picking an item up from triggering drop
+    private double forcedDropCooldown = .5; //should be small number in seconds to prevent abnormally high joint force when picking an item up from triggering drop
     private double currentForcedDropTimer = 0;
     private Interact.InteractResponse interactResponse;
     private float maxInteractionDistance = 3;

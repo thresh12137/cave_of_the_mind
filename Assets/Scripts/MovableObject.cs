@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Data;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -17,6 +18,7 @@ public class MovableObject : MonoBehaviour, IInteractable
     public bool isPickedUp = false;
     private GameObject interactor;
     public PlayerDetectionTrigger playerDetectionTrigger;
+    public ObjectDetectionTrigger objectDetectionTrigger;
     private bool isPlayerStandingOnPlatform = false;
     private bool currentlyInCollision = false;
 
@@ -26,19 +28,28 @@ public class MovableObject : MonoBehaviour, IInteractable
     private Plane horizontalPlane;
     float minimumX, maximumX, minimumY, maximumY, minimumZ, maximumZ;
     private Vector3 lastPoint;
+    private List<GameObject> objectsOnPlatform;
+    private List<FixedJoint> jointsOnPlatform;
 
     private Interact.InteractResponse interactResponse;
 
     void Start()
     {
-        if (playerDetectionTrigger == null) throw new System.Exception("No playerDetectionTrigger associated with " + gameObject);
+        if (playerDetectionTrigger == null || objectDetectionTrigger == null) throw new System.Exception("No playerDetectionTrigger or objectDetectionTrigger associated with " + gameObject);
 
         isPickedUp = false;
         transform.position = Vector3.Lerp(point1, point2, startLerpPosition);
         lastPoint = transform.position;
 
+        objectsOnPlatform = new List<GameObject>();
+        jointsOnPlatform = new List<FixedJoint>();
+
         playerDetectionTrigger.enterEvent += playerDetected;
         playerDetectionTrigger.exitEvent += playerNotDetected;
+        objectDetectionTrigger.enterEvent += objectOnPlatform;
+        objectDetectionTrigger.exitEvent += objectOffPlatform;
+
+
 
         Vector3 axisAlignedCheckValue = point1 - point2; 
         movementAxis = axisAlignedCheckValue.normalized;
@@ -131,11 +142,31 @@ public class MovableObject : MonoBehaviour, IInteractable
         isPlayerStandingOnPlatform = false;
     }
 
+    void objectOnPlatform(GameObject obj)
+    {
+        objectsOnPlatform.Add(obj);
+
+        //if (isPickedUp) // add a joint to grab objects that fall onto the platform while it is picked up
+        //{
+        //    Rigidbody rb = obj.GetComponent<Rigidbody>();
+        //    if (rb == null) return;
+
+        //    FixedJoint joint = gameObject.AddComponent<FixedJoint>();
+        //    joint.connectedBody = obj.GetComponent<Rigidbody>();
+        //    jointsOnPlatform.Add(joint);
+        //}
+    }
+
+    void objectOffPlatform(GameObject obj)
+    {
+        objectsOnPlatform.Remove(obj);
+    }
+
     void OnCollisionEnter(Collision c)
     {
         if (!currentlyInCollision)
         {
-            if (isPickedUp) dropObject();
+            if (isPickedUp && !objectsOnPlatform.Contains(c.gameObject)) dropObject();
         }
         else currentlyInCollision = false;
     }
@@ -144,10 +175,26 @@ public class MovableObject : MonoBehaviour, IInteractable
     void pickupObject()
     {
         isPickedUp = true;
+
+        //create joint with every object to have them move with the platform
+        foreach (GameObject obj in objectsOnPlatform)
+        {
+            Rigidbody rb = obj.GetComponent<Rigidbody>();
+            if (rb == null) continue;
+
+            FixedJoint joint = gameObject.AddComponent<FixedJoint>();
+            joint.connectedBody = obj.GetComponent<Rigidbody>();
+            joint.enableCollision= true;
+            jointsOnPlatform.Add(joint);
+        }
     }
 
     void dropObject()
     {
+        foreach (FixedJoint joint in jointsOnPlatform) Destroy(joint);
+        jointsOnPlatform.Clear();
+        //foreach (GameObject obj in objectsOnPlatform) obj.transform.position = obj.transform.position + Vector3.up * .1f;
+
         isPickedUp = false;
         transform.position = lastPoint;
 
@@ -170,11 +217,12 @@ public class MovableObject : MonoBehaviour, IInteractable
         }
         else
         {
-            pickupObject();
-
             //set response variable for later response and respond to interactor
             interactor = args.sender;
             interactResponse = args.interactResponseCallback;
+
+            pickupObject();
+
             interactResponse(new InteractResponseEventArgs(gameObject, false));
         }
     }
