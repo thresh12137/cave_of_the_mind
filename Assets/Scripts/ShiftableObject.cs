@@ -13,12 +13,18 @@ public class ShiftableObject : MonoBehaviour
     public Mesh sphereMesh;
     public Mesh tetrahedronMesh;
 
+    public ObjectType startingType = ObjectType.Core;
+
+    public Material[] materials;
+
     PickupableObject pickupableObjectComponent;
+    Renderer rendererComponent;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         pickupableObjectComponent = GetComponent<PickupableObject>();
+        rendererComponent = GetComponent<Renderer>();
         if(pickupableObjectComponent == null) throw new System.Exception("Object is not a pickupableObject:" + gameObject);
     }
 
@@ -41,11 +47,13 @@ public class ShiftableObject : MonoBehaviour
                 GetComponent<MeshFilter>().mesh = cubeMesh;
                 Destroy(GetComponent<Collider>());
                 gameObject.AddComponent<BoxCollider>();
+                rendererComponent.material = materials[1];
                 break;
             case ObjectType.Sphere:
                 GetComponent<MeshFilter>().mesh = sphereMesh;
                 Destroy(GetComponent<Collider>());
                 gameObject.AddComponent<SphereCollider>();
+                rendererComponent.material = materials[2];
                 break;
             case ObjectType.Tetrahedron:
                 GetComponent<MeshFilter>().mesh = tetrahedronMesh;
@@ -54,6 +62,7 @@ public class ShiftableObject : MonoBehaviour
                 col.sharedMesh = tetrahedronMesh;
                 col.convex = true;
                 col.enabled = true;
+                rendererComponent.material = materials[3];
                 break;
         }
     }
@@ -62,7 +71,8 @@ public class ShiftableObject : MonoBehaviour
 //enum for object Types
 public enum ObjectType
 {
-    Cube = 0,
-    Sphere = 1,
-    Tetrahedron = 2
+    Core = 0,
+    Cube = 1,
+    Sphere = 2,
+    Tetrahedron = 3
 }

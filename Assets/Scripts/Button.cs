@@ -8,7 +8,8 @@ public class Button : MonoBehaviour
     //To play animation for button pressed and not pressed
     public string buttonPressedAnim, buttonUnpressedAnim;
 
-    public Animator buttonAnim;
+    Animator buttonAnim;
+    public GameObject buttonMesh;
 
     public ObjectDetectionTrigger objectDetectionTrigger;
 
@@ -25,6 +26,9 @@ public class Button : MonoBehaviour
     {
         if (objectDetectionTrigger == null) throw new System.Exception("No objectDetectionTrigger associated with " + gameObject);
 
+        buttonAnim = GetComponent<Animator>();
+        buttonAnim.speed = 2.0f;
+
         objectDetectionTrigger.enterEvent += buttonPressedby;
         objectDetectionTrigger.exitEvent += buttonReleasedby;
 
@@ -40,7 +44,7 @@ public class Button : MonoBehaviour
             {
                 isPressed = true;
                 if (pressedEvent != null) pressedEvent(gameObject);
-                animateButtonDown();
+                if(buttonAnim != null) animateButtonDown();
             }
         }
         else
@@ -49,14 +53,14 @@ public class Button : MonoBehaviour
             {
                 isPressed = false;
                 if (releasedEvent != null) releasedEvent(gameObject);
-                animateButtonUp();
+                if (buttonAnim != null) animateButtonUp();
             }
         }
     }
 
     void buttonPressedby(GameObject obj)
     {
-        if(obj.GetComponent<Rigidbody>()) pressers.Add(obj); //only accept presses from objects with a rigidbody
+        if(obj != buttonMesh) pressers.Add(obj);
     }
     void buttonReleasedby(GameObject obj)
     {
@@ -65,24 +69,14 @@ public class Button : MonoBehaviour
 
     void animateButtonDown()
     {
-        
-
-       // if(isPressed) return;
-
         buttonAnim.ResetTrigger("Unpressed");
-        print("Playing Animation");
         buttonAnim.SetTrigger("Pressed");
-        isPressed = true;
 
     }
     void animateButtonUp()
     {
-       // if(!isPressed) return;
-
         buttonAnim.ResetTrigger("Pressed");
         buttonAnim.SetTrigger("Unpressed");
-        isPressed = false;
-        //TODO make button go up
     }
 }
 

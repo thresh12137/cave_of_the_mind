@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 108761439129898609}
   - component: {fileID: 8290294771646709390}
   m_Layer: 0
-  m_Name: Shiftable Core
+  m_Name: Shiftable Object
   m_TagString: Interactable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -68,7 +68,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 19efce32108c9034187df3ad1a9ccb66, type: 2}
+  - {fileID: 2100000, guid: b16affe861f9f2649a049cca8df02d8f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -167,3 +167,9 @@ MonoBehaviour:
   cubeMesh: {fileID: -7759331768739107841, guid: 8b81496dc3fe9cf4c8a795e152ed6446, type: 3}
   sphereMesh: {fileID: 5663087941215493229, guid: 086b815d8a2137c46a2e34e35bc15703, type: 3}
   tetrahedronMesh: {fileID: 7069075995698589046, guid: 37182b8cba953c4439cda1573c0224e7, type: 3}
+  startingType: 0
+  materials:
+  - {fileID: 2100000, guid: b16affe861f9f2649a049cca8df02d8f, type: 2}
+  - {fileID: 2100000, guid: b5cfe6ce04903594e8c4dae770ae16ea, type: 2}
+  - {fileID: 2100000, guid: 7ab977a21c92388468ee65ad1c0e5a78, type: 2}
+  - {fileID: 2100000, guid: 7ab977a21c92388468ee65ad1c0e5a78, type: 2}
