@@ -5,11 +5,12 @@ using static Interact;
 
 public class PickupableObject : MonoBehaviour, IInteractable
 {
-    public GameObject hand;
+    private GameObject hand;
     public bool isPickedUp = false;
     public static float dropForceThreshold = 750f;
     public static float throwForce = 7;
 
+    private Rigidbody rigidbodyComponent;
     private int startingLayer;
     private Joint pickupJoint;
     private double forcedDropCooldown = .5; //should be small number to prevent abnormally high joint force when picking an item up from triggering drop
@@ -21,6 +22,7 @@ public class PickupableObject : MonoBehaviour, IInteractable
     void Start()
     {
         startingLayer = gameObject.layer;
+        rigidbodyComponent = GetComponent<Rigidbody>();
     }
 
     void Update()
@@ -43,8 +45,11 @@ public class PickupableObject : MonoBehaviour, IInteractable
 
     void pickupObject()
     {
+        Vector3 oldPos = transform.position;
+        Quaternion oldRotation = transform.rotation;
+
         transform.position = hand.transform.position;
-        transform.rotation = hand.transform.rotation;
+        //transform.rotation = hand.transform.rotation;
 
         isPickedUp = true;
         currentForcedDropTimer = forcedDropCooldown;
@@ -52,11 +57,15 @@ public class PickupableObject : MonoBehaviour, IInteractable
         pickupJoint = gameObject.AddComponent<FixedJoint>();
         pickupJoint.connectedBody = hand.GetComponent<Rigidbody>();
         gameObject.layer = 7;
+
+        transform.position = oldPos;
+        //transform.rotation = oldRotation;
     }
 
     void dropObject()
     {
         //disconnect joint and inform interactor that interaction is done (object is dropped)
+        rigidbodyComponent.constraints = RigidbodyConstraints.None;
         Destroy(pickupJoint);
         pickupJoint = null;
         isPickedUp = false;
@@ -68,6 +77,7 @@ public class PickupableObject : MonoBehaviour, IInteractable
 
     void throwObject()
     {
+        rigidbodyComponent.constraints = RigidbodyConstraints.None;
         //calculate vector to throw in
         Vector3 throwDir = hand.transform.forward * throwForce;
         //disconnect joint
@@ -90,6 +100,7 @@ public class PickupableObject : MonoBehaviour, IInteractable
         }
         else
         {
+            hand = args.hand;
             pickupObject();
 
             //set response variable for later response and respond to interactor

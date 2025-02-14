@@ -9,6 +9,7 @@ public class Interact : MonoBehaviour
     public static KeyCode interactKey; //global key variable to reference from other scripts
     public KeyCode interactionKey; //key to get from inspector  THIS IS BAD CODE STYLE!  FIX THIS!
     public Transform pos;
+    public GameObject hand;
     public float maxInteractDistance;
     public delegate void OnInteractPossibleEvent(bool isInteractPossible);
     public static event OnInteractPossibleEvent interactPossibleEvent;
@@ -38,7 +39,7 @@ public class Interact : MonoBehaviour
             if (Input.GetKeyDown(interactKey) && currentInteractionScript != null)
             {
                 //fire interact event with current object
-                currentInteractionScript.onInteract(new InteractEventArgs(gameObject, currentInteractionObject, respondToEvent));
+                currentInteractionScript.onInteract(new InteractEventArgs(gameObject, currentInteractionObject, respondToEvent, hand));
             }
         }
 
@@ -72,7 +73,7 @@ public class Interact : MonoBehaviour
                         canInteract = false;
                         interactResponseNotRecievedTimer = 5;
                         isInteractResponseRecieved = false;
-                        interactable.onInteract(new InteractEventArgs(gameObject, hit.collider.gameObject, respondToEvent));
+                        interactable.onInteract(new InteractEventArgs(gameObject, hit.collider.gameObject, respondToEvent, hand));
                     }
                 }
             }
@@ -134,6 +135,7 @@ public interface IInteractable
 public struct InteractEventArgs
 {
     public GameObject sender;
+    public GameObject hand;
     public GameObject target;
     public InteractResponse interactResponseCallback;
 
@@ -142,6 +144,15 @@ public struct InteractEventArgs
         this.sender = sender;
         this.target = target;
         this.interactResponseCallback = interactResponseEvent;
+        this.hand = null;
+    }
+
+    public InteractEventArgs(GameObject sender, GameObject target, InteractResponse interactResponseEvent, GameObject hand)
+    {
+        this.sender = sender;
+        this.target = target;
+        this.interactResponseCallback = interactResponseEvent;
+        this.hand = hand;
     }
 }
 

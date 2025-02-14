@@ -498,7 +498,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf27fff940103194db2255c5300ac393, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hand: {fileID: 407628006}
   isPickedUp: 0
 --- !u!54 &137543239
 Rigidbody:
@@ -1747,6 +1746,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 617971793603735102, guid: 5699088b0b09a8a429391aff0ddce614, type: 3}
+      propertyPath: hand
+      value: 
+      objectReference: {fileID: 407628006}
     - target: {fileID: 1477889441539865653, guid: 5699088b0b09a8a429391aff0ddce614, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2830,7 +2833,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf27fff940103194db2255c5300ac393, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hand: {fileID: 0}
   isPickedUp: 0
 --- !u!1 &1209993873
 GameObject:
@@ -4025,6 +4027,14 @@ PrefabInstance:
       propertyPath: hand
       value: 
       objectReference: {fileID: 407628006}
+    - target: {fileID: 108761439129898609, guid: ba2d0ba19132e164bb285e723ad2314d, type: 3}
+      propertyPath: isPickedUp
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 108761439129898609, guid: ba2d0ba19132e164bb285e723ad2314d, type: 3}
+      propertyPath: TeleportCubeBeforeJoining
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1781562993624876429, guid: ba2d0ba19132e164bb285e723ad2314d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -27.009

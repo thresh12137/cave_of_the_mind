@@ -21,8 +21,8 @@ public class MovableObject : MonoBehaviour, IInteractable
     private bool currentlyInCollision = false;
 
     private Vector3 movementAxis; //this normalized vector points towards point2 from point1
-    private float distance; //distance between point 1 and point 2
     private Plane verticalPlane;
+    private Plane verticalPlane2;
     private Plane horizontalPlane;
     float minimumX, maximumX, minimumY, maximumY, minimumZ, maximumZ;
     private Vector3 lastPoint;
@@ -40,18 +40,19 @@ public class MovableObject : MonoBehaviour, IInteractable
         playerDetectionTrigger.enterEvent += playerDetected;
         playerDetectionTrigger.exitEvent += playerNotDetected;
 
-        //GetComponent<Rigidbody>().isKinematic = true;
-
         Vector3 axisAlignedCheckValue = point1 - point2; 
         movementAxis = axisAlignedCheckValue.normalized;
-        distance = axisAlignedCheckValue.magnitude;
 
         Vector3 verticalPlaneNormal = Vector3.Cross(Vector3.up, movementAxis);
         verticalPlane = new Plane(verticalPlaneNormal, point1);
 
+        Vector3 verticalPlaneNormal2 = Vector3.Cross(Vector3.up, verticalPlaneNormal);
+        verticalPlane2 = new Plane(verticalPlaneNormal2, point1);
+
         Vector3 horizontalPlaneNormal;
         if(movementAxis.z != 0) horizontalPlaneNormal = Vector3.Cross(Vector3.right, movementAxis);
         else horizontalPlaneNormal = Vector3.Cross(Vector3.forward, movementAxis);
+
         horizontalPlane = new Plane(horizontalPlaneNormal, point1);
 
         //calculate min and max values
@@ -70,15 +71,14 @@ public class MovableObject : MonoBehaviour, IInteractable
         {
             //set up variables and cast rays
             Ray ray = new Ray(interactor.transform.position, interactor.transform.forward);
-            float horizontalDistanceAlongRay, verticalDistanceAlongRay;
+            float horizontalDistanceAlongRay, verticalDistanceAlongRay, verticalDistanceAlongRay2;
             Vector3 newPos;
-            Vector3 newPosHorizontal = Vector3.zero;
-            Vector3 newPosVertical = Vector3.zero;
             bool horizontalPlaneBool = horizontalPlane.Raycast(ray, out horizontalDistanceAlongRay);
             bool verticalPlaneBool = verticalPlane.Raycast(ray, out verticalDistanceAlongRay);
+            bool verticalPlane2Bool = verticalPlane.Raycast(ray, out verticalDistanceAlongRay2);
 
             //set new position
-            if(verticalPlaneBool && horizontalPlaneBool)
+            if (verticalPlaneBool && horizontalPlaneBool)
             {
                 bool verticalPointCloserThanHorizontalPoint = Vector3.Distance(ray.GetPoint(verticalDistanceAlongRay), transform.position) < Vector3.Distance(ray.GetPoint(horizontalDistanceAlongRay), transform.position);
                 if (verticalPointCloserThanHorizontalPoint)
@@ -113,8 +113,12 @@ public class MovableObject : MonoBehaviour, IInteractable
             //apply new position
             transform.position = newPos;
             lastPoint = newPos;
-            //raycast with the vertical plane to get the point above the path
+
+            //draw planes for debugging
+            DrawPlane(point2, horizontalPlane.normal);
+            DrawPlane(point1, verticalPlane.normal);
         }
+        
     }
     void playerDetected()
     {
@@ -179,5 +183,32 @@ public class MovableObject : MonoBehaviour, IInteractable
     {
         if (isPlayerStandingOnPlatform) return false;
         else return distance < maxInteractableDistance;
+    }
+
+
+
+    public void DrawPlane(Vector3 position, Vector3 normal)
+    {
+        Vector3 v3;
+
+        if (normal.normalized != Vector3.forward)
+            v3 = Vector3.Cross(normal, Vector3.forward).normalized * normal.magnitude;
+        else
+            v3 = Vector3.Cross(normal, Vector3.up).normalized * normal.magnitude; ;
+
+        var corner0 = position + v3;
+        var corner2 = position - v3;
+        var q = Quaternion.AngleAxis(90.0f, normal);
+        v3 = q * v3;
+        var corner1 = position + v3;
+        var corner3 = position - v3;
+
+        Debug.DrawLine(corner0, corner2, Color.green);
+        Debug.DrawLine(corner1, corner3, Color.green);
+        Debug.DrawLine(corner0, corner1, Color.green);
+        Debug.DrawLine(corner1, corner2, Color.green);
+        Debug.DrawLine(corner2, corner3, Color.green);
+        Debug.DrawLine(corner3, corner0, Color.green);
+        Debug.DrawRay(position, normal, Color.red);
     }
 }
