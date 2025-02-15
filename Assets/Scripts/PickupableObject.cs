@@ -1,5 +1,6 @@
 //using UnityEditor.UI;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using static Interact;
 
@@ -17,6 +18,10 @@ public class PickupableObject : MonoBehaviour, IInteractable
     private double currentForcedDropTimer = 0;
     private Interact.InteractResponse interactResponse;
     private float maxInteractionDistance = 3;
+
+    public static UnityEvent objectPickedUpEvent = new UnityEvent();
+    public static UnityEvent objectDroppedEvent = new UnityEvent();
+    public static UnityEvent objectThrownEvent = new UnityEvent();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -60,6 +65,8 @@ public class PickupableObject : MonoBehaviour, IInteractable
 
         transform.position = oldPos;
         //transform.rotation = oldRotation;
+
+        objectPickedUpEvent.Invoke();
     }
 
     void dropObject()
@@ -73,6 +80,8 @@ public class PickupableObject : MonoBehaviour, IInteractable
         gameObject.layer = startingLayer;
         GetComponent<Rigidbody>().linearVelocity = Vector3.zero; // here to stop object from going flying if it got forcefully dropped from pushing into wall
         interactResponse(new InteractResponseEventArgs(gameObject, true));
+
+        objectDroppedEvent.Invoke();
     }
 
     void throwObject()
@@ -90,6 +99,8 @@ public class PickupableObject : MonoBehaviour, IInteractable
         GetComponent<Rigidbody>().AddForce(throwDir, ForceMode.VelocityChange);
         //let interactor know object is dropped
         interactResponse(new InteractResponseEventArgs(gameObject, true));
+
+        objectThrownEvent.Invoke();
     }
 
     public void onInteract(InteractEventArgs args)

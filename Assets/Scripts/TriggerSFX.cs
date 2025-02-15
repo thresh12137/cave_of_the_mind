@@ -8,6 +8,6 @@ public class TriggerSFX : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        playsound.Play();   
+        playsound.Play();
     }
 }
