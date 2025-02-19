@@ -9,11 +9,12 @@ public class ShiftableObject : MonoBehaviour
     public static KeyCode obj3Key = KeyCode.Alpha3;
     public static KeyCode obj4Key = KeyCode.Alpha4;
 
+    public Mesh coreMesh;
     public Mesh cubeMesh;
     public Mesh sphereMesh;
     public Mesh tetrahedronMesh;
 
-    public ObjectType startingType = ObjectType.Core;
+    public ObjectType startingType;
 
     public Material[] materials;
 
@@ -26,6 +27,8 @@ public class ShiftableObject : MonoBehaviour
         pickupableObjectComponent = GetComponent<PickupableObject>();
         rendererComponent = GetComponent<Renderer>();
         if(pickupableObjectComponent == null) throw new System.Exception("Object is not a pickupableObject:" + gameObject);
+
+        changeObjectTo(startingType);
     }
 
     // Update is called once per frame
@@ -43,6 +46,12 @@ public class ShiftableObject : MonoBehaviour
     {
         switch (type)
         {
+            case ObjectType.Core:
+                GetComponent<MeshFilter>().mesh = coreMesh;
+                Destroy(GetComponent<Collider>());
+                gameObject.AddComponent<BoxCollider>();
+                rendererComponent.material = materials[0];
+                break;
             case ObjectType.Cube:
                 GetComponent<MeshFilter>().mesh = cubeMesh;
                 Destroy(GetComponent<Collider>());

@@ -150,7 +150,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf27fff940103194db2255c5300ac393, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hand: {fileID: 0}
   isPickedUp: 0
 --- !u!114 &8290294771646709390
 MonoBehaviour:
@@ -164,6 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eda6ef00b60b75c429ac7af0c9d2d996, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  coreMesh: {fileID: 6166920122180908745, guid: 3472523af9ff72449be62620def8e947, type: 3}
   cubeMesh: {fileID: -7759331768739107841, guid: 8b81496dc3fe9cf4c8a795e152ed6446, type: 3}
   sphereMesh: {fileID: 5663087941215493229, guid: 086b815d8a2137c46a2e34e35bc15703, type: 3}
   tetrahedronMesh: {fileID: 7069075995698589046, guid: 37182b8cba953c4439cda1573c0224e7, type: 3}
