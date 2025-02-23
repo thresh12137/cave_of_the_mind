@@ -158,8 +158,7 @@ MonoBehaviour:
   doorOpenAnimName: Door_Open
   doorCloseAnimName: Door_Close
   doorAnim: {fileID: 4615185263230154671}
-  buttons:
-  - {fileID: 0}
+  buttons: []
   areButtonsRequired: 0
   numButtonsRequired: 1
 --- !u!1 &4663070628419421536

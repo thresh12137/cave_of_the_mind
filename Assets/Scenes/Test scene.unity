@@ -208,10 +208,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2687838c28e2d9043be0c0bfde080781, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonPressedAnim: 
-  buttonUnpressedAnim: 
-  buttonMesh: {fileID: 834807753}
-  objectDetectionTrigger: {fileID: 1364824084}
+  buttonPressedAnim: Pressed
+  buttonUnpressedAnim: Unpressed
+  buttonMesh: {fileID: 0}
+  objectDetectionTrigger: {fileID: 0}
   isPressed: 0
 --- !u!1 &46218436
 GameObject:
@@ -2716,11 +2716,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3582205486626470319, guid: fcafb85d86d34c94aa70e0e9d3b6c618, type: 3}
   m_PrefabInstance: {fileID: 774810131}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &834807753 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4586098726558917832, guid: fcafb85d86d34c94aa70e0e9d3b6c618, type: 3}
-  m_PrefabInstance: {fileID: 30312645}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1042820356
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3363,17 +3358,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1293008803}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1364824084 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6746386124955839933, guid: 302d7106b7c91e146b687d1e2f39c694, type: 3}
-  m_PrefabInstance: {fileID: 2089385659}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6cf4463b368152745961e9ad4e5c13bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1373733696
 PrefabInstance:
   m_ObjectHideFlags: 0
