@@ -144,7 +144,7 @@ public class MovableObject : MonoBehaviour, IInteractable
 
     void objectOnPlatform(GameObject obj)
     {
-        objectsOnPlatform.Add(obj);
+        if(obj.GetComponent<Rigidbody>() != null) objectsOnPlatform.Add(obj);
 
         //if (isPickedUp) // add a joint to grab objects that fall onto the platform while it is picked up
         //{

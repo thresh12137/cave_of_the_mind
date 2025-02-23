@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2239331432072203242}
   - component: {fileID: 6746386124955839933}
   m_Layer: 2
-  m_Name: PlayerDetectionTrigger
+  m_Name: DetectionTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -207,7 +207,7 @@ MonoBehaviour:
   startLerpPosition: 0.5
   isPickedUp: 0
   playerDetectionTrigger: {fileID: 2239331432072203242}
-  objectDetectionTrigger: {fileID: 0}
+  objectDetectionTrigger: {fileID: 6746386124955839933}
 --- !u!54 &6452882929563564612
 Rigidbody:
   m_ObjectHideFlags: 0
