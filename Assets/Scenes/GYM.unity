@@ -5140,6 +5140,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5475840701543618446, guid: 302d7106b7c91e146b687d1e2f39c694, type: 3}
+      propertyPath: point2.x
+      value: -20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5475840701543618446, guid: 302d7106b7c91e146b687d1e2f39c694, type: 3}
+      propertyPath: point2.y
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5475840701543618446, guid: 302d7106b7c91e146b687d1e2f39c694, type: 3}
       propertyPath: objectDetectionTrigger
       value: 
       objectReference: {fileID: 952968612}

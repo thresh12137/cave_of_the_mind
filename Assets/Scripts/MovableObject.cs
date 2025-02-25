@@ -54,15 +54,15 @@ public class MovableObject : MonoBehaviour, IInteractable
         Vector3 axisAlignedCheckValue = point1 - point2; 
         movementAxis = axisAlignedCheckValue.normalized;
 
+        if (movementAxis.x == 0 && movementAxis.z == 0) movementAxis.x += -0.001f;
+
         Vector3 verticalPlaneNormal = Vector3.Cross(Vector3.up, movementAxis);
         verticalPlane = new Plane(verticalPlaneNormal, point1);
-
-        Vector3 verticalPlaneNormal2 = Vector3.Cross(Vector3.up, verticalPlaneNormal);
-        verticalPlane2 = new Plane(verticalPlaneNormal2, point1);
 
         Vector3 horizontalPlaneNormal;
         if(movementAxis.z != 0) horizontalPlaneNormal = Vector3.Cross(Vector3.right, movementAxis);
         else horizontalPlaneNormal = Vector3.Cross(Vector3.forward, movementAxis);
+
 
         horizontalPlane = new Plane(horizontalPlaneNormal, point1);
 
@@ -82,11 +82,10 @@ public class MovableObject : MonoBehaviour, IInteractable
         {
             //set up variables and cast rays
             Ray ray = new Ray(interactor.transform.position, interactor.transform.forward);
-            float horizontalDistanceAlongRay, verticalDistanceAlongRay, verticalDistanceAlongRay2;
+            float horizontalDistanceAlongRay, verticalDistanceAlongRay;
             Vector3 newPos;
             bool horizontalPlaneBool = horizontalPlane.Raycast(ray, out horizontalDistanceAlongRay);
             bool verticalPlaneBool = verticalPlane.Raycast(ray, out verticalDistanceAlongRay);
-            bool verticalPlane2Bool = verticalPlane.Raycast(ray, out verticalDistanceAlongRay2);
 
             //set new position
             if (verticalPlaneBool && horizontalPlaneBool)
@@ -126,10 +125,11 @@ public class MovableObject : MonoBehaviour, IInteractable
             lastPoint = newPos;
 
             //draw planes for debugging
-            DrawPlane(point2, horizontalPlane.normal);
-            DrawPlane(point1, verticalPlane.normal);
+            DrawPlane(point1, horizontalPlane.normal, Color.green, 10);
+            DrawPlane(point1, verticalPlane.normal, Color.blue, 8);
         }
         
+
     }
     void playerDetected()
     {
@@ -235,14 +235,14 @@ public class MovableObject : MonoBehaviour, IInteractable
 
 
 
-    public void DrawPlane(Vector3 position, Vector3 normal)
+    public void DrawPlane(Vector3 position, Vector3 normal, Color color, float size)
     {
         Vector3 v3;
 
         if (normal.normalized != Vector3.forward)
-            v3 = Vector3.Cross(normal, Vector3.forward).normalized * normal.magnitude;
+            v3 = Vector3.Cross(normal, Vector3.forward).normalized * size;
         else
-            v3 = Vector3.Cross(normal, Vector3.up).normalized * normal.magnitude; ;
+            v3 = Vector3.Cross(normal, Vector3.up).normalized * size;
 
         var corner0 = position + v3;
         var corner2 = position - v3;
@@ -251,12 +251,12 @@ public class MovableObject : MonoBehaviour, IInteractable
         var corner1 = position + v3;
         var corner3 = position - v3;
 
-        Debug.DrawLine(corner0, corner2, Color.green);
-        Debug.DrawLine(corner1, corner3, Color.green);
-        Debug.DrawLine(corner0, corner1, Color.green);
-        Debug.DrawLine(corner1, corner2, Color.green);
-        Debug.DrawLine(corner2, corner3, Color.green);
-        Debug.DrawLine(corner3, corner0, Color.green);
+        Debug.DrawLine(corner0, corner2, color);
+        Debug.DrawLine(corner1, corner3, color);
+        Debug.DrawLine(corner0, corner1, color);
+        Debug.DrawLine(corner1, corner2, color);
+        Debug.DrawLine(corner2, corner3, color);
+        Debug.DrawLine(corner3, corner0, color);
         Debug.DrawRay(position, normal, Color.red);
     }
 }
