@@ -24,7 +24,6 @@ public class MovableObject : MonoBehaviour, IInteractable
 
     private Vector3 movementAxis; //this normalized vector points towards point2 from point1
     private Plane verticalPlane;
-    private Plane verticalPlane2;
     private Plane horizontalPlane;
     float minimumX, maximumX, minimumY, maximumY, minimumZ, maximumZ;
     private Vector3 lastPoint;
@@ -164,6 +163,7 @@ public class MovableObject : MonoBehaviour, IInteractable
 
     void OnCollisionEnter(Collision c)
     {
+        if (c.relativeVelocity.magnitude < 1) return;
         if (!currentlyInCollision)
         {
             if (isPickedUp && !objectsOnPlatform.Contains(c.gameObject)) dropObject();
