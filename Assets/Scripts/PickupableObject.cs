@@ -88,7 +88,7 @@ public class PickupableObject : MonoBehaviour, IInteractable
     {
         rigidbodyComponent.constraints = RigidbodyConstraints.None;
         //calculate vector to throw in
-        Vector3 throwDir = hand.transform.forward * throwForce;
+        Vector3 throwDir = hand.transform.forward * Mathf.Clamp(throwForce / rigidbodyComponent.mass, throwForce * 0.5f, throwForce * 2f);
         //disconnect joint
         Destroy(pickupJoint);
         pickupJoint = null;

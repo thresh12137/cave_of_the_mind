@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 8d0790fd72b6ebb4dbe80558b834d9d7
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - cubeMesh: {fileID: -7759331768739107841, guid: 8b81496dc3fe9cf4c8a795e152ed6446,
+      type: 3}
+  - sphereMesh: {fileID: 5663087941215493229, guid: 086b815d8a2137c46a2e34e35bc15703,
+      type: 3}
+  - tetrahedronMesh: {fileID: 7069075995698589046, guid: 37182b8cba953c4439cda1573c0224e7,
+      type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
