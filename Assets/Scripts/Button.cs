@@ -5,10 +5,6 @@ using UnityEngine.Events;
 
 public class Button : MonoBehaviour
 {
-
-    //To play animation for button pressed and not pressed
-    public string buttonPressedAnim, buttonUnpressedAnim;
-
     Animator buttonAnim;
     public GameObject buttonMesh;
 
@@ -31,7 +27,7 @@ public class Button : MonoBehaviour
         objectDetectionTrigger.enterEvent += buttonPressedby;
         objectDetectionTrigger.exitEvent += buttonReleasedby;
 
-        isPressed = buttonAnim.GetCurrentAnimatorStateInfo(0).IsName(buttonPressedAnim);
+        isPressed = buttonAnim.GetCurrentAnimatorStateInfo(0).IsName("Pressed");
         pressers = new List<GameObject>();
     }
 
