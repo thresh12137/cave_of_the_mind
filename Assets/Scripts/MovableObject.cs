@@ -11,7 +11,7 @@ using static UnityEngine.Rendering.GPUSort;
 /// </summary>
 public class MovableObject : MonoBehaviour, IInteractable
 {
-    private float maxInteractableDistance = 10;
+    private float maxInteractionDistance = 15;
     public Vector3 point1;
     public Vector3 point2;
     public float startLerpPosition; //fraction along the path point1 -> point2 to start.  For example, 0 is at point 1, 1 is at point 2, and 0.5 is the midpoint between them
@@ -31,6 +31,9 @@ public class MovableObject : MonoBehaviour, IInteractable
     private List<FixedJoint> jointsOnPlatform;
 
     private Interact.InteractResponse interactResponse;
+
+    private Outline outlineEffect;
+    private bool canBeInteractedWith = false;
 
     void Start()
     {
@@ -72,11 +75,27 @@ public class MovableObject : MonoBehaviour, IInteractable
         maximumY = Mathf.Max(point1.y, point2.y);
         minimumZ = Mathf.Min(point1.z, point2.z);
         maximumZ = Mathf.Max(point1.z, point2.z);
+
+        outlineEffect = GetComponent<Outline>();
+        if (outlineEffect != null)
+        {
+            outlineEffect.OutlineColor = Interact.outlineColor;
+            outlineEffect.OutlineWidth = Interact.outlineWidth;
+            outlineEffect.OutlineMode = Interact.outlineMode;
+            outlineEffect.enabled = false;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (outlineEffect != null)
+        {
+            if (canBeInteractedWith) outlineEffect.enabled = true;
+            else outlineEffect.enabled = false;
+            canBeInteractedWith = false;
+        }
+
         if (isPickedUp)
         {
             //set up variables and cast rays
@@ -230,7 +249,11 @@ public class MovableObject : MonoBehaviour, IInteractable
     public bool interactionQuery(float distance)
     {
         if (isPlayerStandingOnPlatform) return false;
-        else return distance < maxInteractableDistance;
+        else
+        {
+            canBeInteractedWith = distance < maxInteractionDistance;
+            return canBeInteractedWith;
+        }
     }
 
 

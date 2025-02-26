@@ -18,6 +18,8 @@ public class PickupableObject : MonoBehaviour, IInteractable
     private double currentForcedDropTimer = 0;
     private Interact.InteractResponse interactResponse;
     private float maxInteractionDistance = 3;
+    private Outline outlineEffect;
+    private bool canBeInteractedWith = false;
 
     public static UnityEvent objectPickedUpEvent = new UnityEvent();
     public static UnityEvent objectDroppedEvent = new UnityEvent();
@@ -28,10 +30,26 @@ public class PickupableObject : MonoBehaviour, IInteractable
     {
         startingLayer = gameObject.layer;
         rigidbodyComponent = GetComponent<Rigidbody>();
+
+        outlineEffect = GetComponent<Outline>();
+        if(outlineEffect != null)
+        {
+            outlineEffect.OutlineColor = Interact.outlineColor;
+            outlineEffect.OutlineWidth = Interact.outlineWidth;
+            outlineEffect.OutlineMode = Interact.outlineMode;
+            outlineEffect.enabled = false;
+        }
     }
 
     void Update()
     {
+        if(outlineEffect != null)
+        {
+            if(canBeInteractedWith) outlineEffect.enabled = true;
+            else outlineEffect.enabled = false;
+            canBeInteractedWith = false;
+        }
+        
         //Debug.Log("current joint force: " + pickupJoint.currentForce.magnitude);
         if (isPickedUp && pickupJoint != null)
         {
@@ -122,6 +140,7 @@ public class PickupableObject : MonoBehaviour, IInteractable
 
     public bool interactionQuery(float distance)
     {
-        return distance < maxInteractionDistance;
+        canBeInteractedWith = distance < maxInteractionDistance;
+        return canBeInteractedWith;
     }
 }

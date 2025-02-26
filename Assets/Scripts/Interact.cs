@@ -8,6 +8,9 @@ public class Interact : MonoBehaviour
 {
     public static KeyCode interactKey; //global key variable to reference from other scripts
     public KeyCode interactionKey; //key to get from inspector  THIS IS BAD CODE STYLE!  FIX THIS!
+    public static int outlineWidth = 4;
+    public static Color outlineColor = Color.green;
+    public static Outline.Mode outlineMode = Outline.Mode.OutlineVisible;
     public Transform pos;
     public GameObject hand;
     public float maxInteractDistance;

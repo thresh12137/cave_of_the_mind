@@ -92,6 +92,7 @@ GameObject:
   - component: {fileID: 3520070237774872573}
   - component: {fileID: 4052936013485484947}
   - component: {fileID: 5475840701543618446}
+  - component: {fileID: 3962697501850060882}
   - component: {fileID: 6452882929563564612}
   m_Layer: 0
   m_Name: Movable Platform
@@ -208,6 +209,24 @@ MonoBehaviour:
   isPickedUp: 0
   playerDetectionTrigger: {fileID: 2239331432072203242}
   objectDetectionTrigger: {fileID: 6746386124955839933}
+--- !u!114 &3962697501850060882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7094744459693848945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 2
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!54 &6452882929563564612
 Rigidbody:
   m_ObjectHideFlags: 0

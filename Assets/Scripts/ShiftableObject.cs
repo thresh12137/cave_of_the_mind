@@ -20,6 +20,7 @@ public class ShiftableObject : MonoBehaviour
 
     PickupableObject pickupableObjectComponent;
     Renderer rendererComponent;
+    Outline outlineComponent;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

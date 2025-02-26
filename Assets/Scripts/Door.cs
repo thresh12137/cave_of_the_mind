@@ -16,6 +16,8 @@ public class Door : MonoBehaviour, IInteractable, ITriggeredByButton
     private int numButtonsPressed = 0;
     private bool isOpen;
     private float maxInteractionDistance = 5;
+    private Outline outlineEffect;
+    private bool canBeInteractedWith = false;
 
     void Start()
     {
@@ -24,6 +26,25 @@ public class Door : MonoBehaviour, IInteractable, ITriggeredByButton
         {
             b.pressedEvent += onButtonPressed;
             b.releasedEvent += onButtonReleased;
+        }
+
+        outlineEffect = GetComponent<Outline>();
+        if (outlineEffect != null)
+        {
+            outlineEffect.OutlineColor = Interact.outlineColor;
+            outlineEffect.OutlineWidth = Interact.outlineWidth;
+            outlineEffect.OutlineMode = Interact.outlineMode;
+            outlineEffect.enabled = false;
+        }
+    }
+
+    void Update()
+    {
+        if (outlineEffect != null)
+        {
+            if (canBeInteractedWith) outlineEffect.enabled = true;
+            else outlineEffect.enabled = false;
+            canBeInteractedWith = false;
         }
     }
 
@@ -74,6 +95,10 @@ public class Door : MonoBehaviour, IInteractable, ITriggeredByButton
     public bool interactionQuery(float distance)
     {
         if (areButtonsRequired) return false;
-        else return distance < maxInteractionDistance;
+        else
+        {
+            canBeInteractedWith = distance < maxInteractionDistance;
+            return canBeInteractedWith;
+        }
     }
 }
