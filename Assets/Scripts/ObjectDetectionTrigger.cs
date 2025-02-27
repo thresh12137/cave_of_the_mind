@@ -11,7 +11,6 @@ public class ObjectDetectionTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        print("object entered trigger: " + other.gameObject);
         if (enterEvent != null) enterEvent(other.gameObject);
     }
 
