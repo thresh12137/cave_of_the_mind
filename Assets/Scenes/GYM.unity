@@ -5251,6 +5251,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 3510970805644146216, guid: 3b81d2950b6672644993f880ea352a1f, type: 3}
+      propertyPath: buttons.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3510970805644146216, guid: 3b81d2950b6672644993f880ea352a1f, type: 3}
       propertyPath: 'buttons.Array.data[0]'
       value: 
       objectReference: {fileID: 898568026}

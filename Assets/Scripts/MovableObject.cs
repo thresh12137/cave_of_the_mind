@@ -28,6 +28,7 @@ public class MovableObject : MonoBehaviour, IInteractable
     float minimumX, maximumX, minimumY, maximumY, minimumZ, maximumZ;
     private Vector3 lastPoint;
     private List<GameObject> objectsOnPlatform;
+    private List<Transform> objectsOnPlatformParents;
     private List<FixedJoint> jointsOnPlatform;
 
     private Interact.InteractResponse interactResponse;
@@ -44,6 +45,7 @@ public class MovableObject : MonoBehaviour, IInteractable
         lastPoint = transform.position;
 
         objectsOnPlatform = new List<GameObject>();
+        objectsOnPlatformParents = new List<Transform>();
         jointsOnPlatform = new List<FixedJoint>();
 
         playerDetectionTrigger.enterEvent += playerDetected;
@@ -162,8 +164,13 @@ public class MovableObject : MonoBehaviour, IInteractable
 
     void objectOnPlatform(GameObject obj)
     {
-        if(obj.GetComponent<Rigidbody>() != null) objectsOnPlatform.Add(obj);
+        if (obj.GetComponent<Rigidbody>() != null && obj != gameObject)
+        {
+            objectsOnPlatform.Add(obj);
+            objectsOnPlatformParents.Add(obj.transform.parent);
+        }
 
+        ////this causes very buggy behavior when the platform is pushed through an object below it
         //if (isPickedUp) // add a joint to grab objects that fall onto the platform while it is picked up
         //{
         //    Rigidbody rb = obj.GetComponent<Rigidbody>();
@@ -177,7 +184,9 @@ public class MovableObject : MonoBehaviour, IInteractable
 
     void objectOffPlatform(GameObject obj)
     {
-        objectsOnPlatform.Remove(obj);
+        int i = objectsOnPlatform.IndexOf(obj);
+        objectsOnPlatformParents.RemoveAt(i);
+        objectsOnPlatform.RemoveAt(i);
     }
 
     void OnCollisionEnter(Collision c)
@@ -205,12 +214,14 @@ public class MovableObject : MonoBehaviour, IInteractable
             joint.connectedBody = obj.GetComponent<Rigidbody>();
             joint.enableCollision= true;
             jointsOnPlatform.Add(joint);
+            obj.transform.parent = transform;
         }
     }
 
     void dropObject()
     {
         foreach (FixedJoint joint in jointsOnPlatform) Destroy(joint);
+        for (int i = 0; i < objectsOnPlatform.Count; i++) objectsOnPlatform[i].transform.parent = null; // if we set this to the associated object on platformParent item, it might get reset to the hand
         jointsOnPlatform.Clear();
         //foreach (GameObject obj in objectsOnPlatform) obj.transform.position = obj.transform.position + Vector3.up * .1f;
 
